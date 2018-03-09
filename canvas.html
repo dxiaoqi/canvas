@@ -1,0 +1,261 @@
+﻿<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title> 
+  <link rel="stylesheet" href="shapes.css">
+  <script src="jquery-3.2.0.min.js"></script>
+  <script src="shapes.js"></script>
+    <script>
+        window.onload=function (){
+
+          var box=document.getElementsByClassName("canvas")[0];
+          var canvas=document.getElementsByTagName("canvas")[0];
+          canvas.width=box.offsetWidth;
+          canvas.height=box.offsetHeight;
+
+          var cobj=canvas.getContext("2d");
+
+          /*
+           cobj.putImageData(data,100,100)
+         */
+          var files=document.getElementsByClassName("file");
+          for (var i = 0; i < files.length; i++) {
+            files[i].onmouseover=function (){
+                var son=this.getElementsByClassName("son")[0];
+                  son.style.display="block";
+            }
+            files[i].onmouseout=function (){
+                var son=this.getElementsByClassName("son")[0];
+                  son.style.display="none";
+            }
+          };
+
+
+          var lis=document.getElementsByClassName("menu")[0].getElementsByTagName("li");
+          var color=document.getElementsByTagName("input")[0];
+
+
+
+          var attrObj={};
+
+          //图形菜单
+          var shape=document.getElementsByClassName("shape")[0];
+          var shapeMenu=shape.getElementsByTagName("li");
+          for (var i = 0; i < shapeMenu.length; i++) {
+            shapeMenu[i].onclick=function (){
+                this.parentNode.style.display="none";
+                drag(canvas,cobj,this.getAttribute("data-role"),attrObj)
+            }
+           }; 
+
+           //文件菜单
+           var fileObj=document.getElementsByClassName("files")[0];
+           var fileMenu=fileObj.getElementsByTagName("li");
+           for (var i = 0; i < fileMenu.length; i++) {
+            fileMenu[i].onclick=function (){
+                this.parentNode.style.display="none";
+                var attrVal=this.getAttribute("data-role");
+                if(attrVal=="save"){
+alert(arr);
+                      //var url=canvas.toDataURL("image/png");
+
+                     // var str=url.replace("image/png","image/octet-stream");
+                      //location.href=str;
+                }else if(attrVal=="clear"){
+                    cobj.clearRect(0,0,canvas.width,canvas.height);
+                    arr=[];
+                }else if(attrVal=="back"){
+                    if(arr.length==0){
+                        alert("顶层");
+                        return;
+                    }
+                    cobj.clearRect(0,0,canvas.width,canvas.height);
+                    arr.pop();
+                     for (var i = 0; i < arr.length; i++) {
+                            arr[i][arr[i].style]()
+                        };
+                }
+            }
+           };
+
+
+
+           //color菜单
+           var colorObj=document.getElementsByClassName("color")[0];
+           var colorMenu=colorObj.getElementsByTagName("input")[0];
+           attrObj.strokeColor=colorMenu.value;
+           attrObj.fillColor=colorMenu.value;
+           colorMenu.onchange=function (){
+           colorObj.style.display="none";
+            attrObj.strokeColor=this.value;
+            attrObj.fillColor=this.value;
+           }
+
+           //边框菜单
+           var borderObj=document.getElementsByClassName("border")[0];
+           var borderMenu=borderObj.getElementsByTagName("li");
+               for (var i = 0; i < borderMenu.length; i++) {
+                borderMenu[i].onclick=function (){
+                    this.parentNode.style.display="none";
+                    if(this.getAttribute("data-role")=="one"){
+                      attrObj.strokeW=1;    
+                    }
+                    if(this.getAttribute("data-role")=="two"){
+                      attrObj.strokeW=3;    
+                    }
+                    if(this.getAttribute("data-role")=="three"){
+                      attrObj.strokeW=5;
+                    }
+                }
+               };
+
+               //绘制类型
+           var lxObj=document.getElementsByClassName("leixing")[0];
+           var lxMenu=lxObj.getElementsByTagName("li");
+           for (var i = 0; i < lxMenu.length; i++) {
+            lxMenu[i].onclick=function (){
+                this.parentNode.style.display="none";
+                var attrName=this.getAttribute("data-role")
+                if(attrName=="stroke"){
+                    attrObj.type="stroke";
+
+                }else if(attrName=="fill"){
+                    attrObj.type="fill";
+                }
+
+            }
+           };
+
+          //编辑菜单
+          var editObj=document.getElementsByClassName("edit")[0];
+           var editMenu=editObj.getElementsByTagName("li");
+
+           for (var i = 0; i < editMenu.length; i++) {
+            editMenu[i].onclick=function (){
+
+                this.parentNode.style.display="none";
+                var attrVal=this.getAttribute("data-role");
+                if(attrVal=="die"){
+                 die(canvas,cobj)
+                }else if(attrVal=="select"){
+                   Select(canvas, cobj)
+                }
+            }
+           };
+
+    //----隐藏按钮功能
+    var hongyuan=document.getElementsByClassName("hongyuan")[0];
+    var menus=document.getElementsByClassName("menu")[0];
+    hongyuan.onclick=function(){
+
+      box.style.cssText="width:75px;height:30px;left:45%;top:90%;";
+      menus.style.overflow="hidden";
+
+    }
+
+    //----显示放大按钮功能
+    var huangyuan=document.getElementsByClassName("huangyuan")[0];
+    var clintw=parseInt(document.documentElement.clientWidth);
+    huangyuan.onclick=function(){
+      var boxw=parseInt(box.offsetWidth);
+      //alert(clintw);
+      //alert(boxw);
+      if(boxw<(clintw*0.5)){
+        menus.style.overflow="visible";
+        box.style.cssText="width:70%;height:80%;left:15%;top:5%";
+
+      } else if((boxw>(clintw*0.4))&&(boxw<(clintw*0.6))){
+        box.style.cssText="width:70%;height:80%;left:15%;top:5%";
+
+      }else if(boxw>(clintw*0.6)){
+        box.style.cssText="width:50%;height:60%;left:25%;top:5%";
+
+      };
+
+
+
+    }
+
+
+    //----关闭按钮功能
+    var lvyuan=document.getElementsByClassName("lvyuan")[0];
+    lvyuan.onclick=function(){
+
+      box.style.cssText="width:0;height:0;display:none;"
+
+
+    }
+
+
+
+    }         
+    </script>
+</head>
+<body>
+
+<div class="canvas">
+    <div class="menu">
+    <div class="yuandian">
+      <div class="hongyuan">~</div>
+      <div class="huangyuan">口</div>
+      <div class="lvyuan">X</div>
+    </div>
+          <!--文件-->
+          <div class="file files">
+            文件
+            <ul class="son ">
+                 <li data-role="save">保存</li>
+                 <li data-role="clear">清除</li>
+                 <li data-role="back">撤销</li>
+            </ul>
+          </div>
+          <!--画图-->
+          <div class="file">
+            画图
+            <ul class="son shape">
+                 <li data-role="line">线条</li>
+                 <li data-role="circle">圆形</li>
+                 <li data-role="rect">矩形</li>
+            </ul>
+          </div>
+          <!--颜色-->
+          <div class="file">
+            颜色
+            <ul data-role="color" class="son color">
+            <li><input type="color" name="color" value="#ffffff"></li>
+            </ul>
+          </div>
+          <!--边框宽度-->
+          <div class="file">
+             边框
+             <ul class="son border">
+                 <li data-role="one" ></li>
+                 <li data-role="two" ></li>
+                 <li data-role="three" ></li>
+             </ul>
+          </div>
+
+           <!--类型-->
+          <div class="file">
+             类型
+             <ul class="son leixing">
+                 <li data-role="stroke"></li>
+                 <li data-role="fill"></li>
+
+             </ul>
+          </div>
+          <!--编辑-->
+           <div class="file">
+             编辑
+             <ul class="son edit">
+                 <li data-role="die">擦除</li>
+                 <li data-role="select">选择</li>
+
+             </ul>
+          </div>
+    </div>
+    <canvas width=500 height=500>
+    </canvas>
+</div>  
+</body>
+</html>
